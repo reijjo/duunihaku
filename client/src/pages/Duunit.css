@@ -99,8 +99,14 @@ main {
   gap: 2rem;
   display: flex;
   width: 100%;
-  align-items: center;
+  height: max-content;
+  align-items: flex-end;
   justify-content: center;
+
+  & input[type="date"] {
+    background-color: white;
+    color: black;
+  }
 }
 
 .search {

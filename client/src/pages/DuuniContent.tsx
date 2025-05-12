@@ -24,6 +24,7 @@ export const DuuniContent = () => {
   const { isOpen, openModal, closeModal, modalContent } = useModal();
   const [kaikki, setKaikki] = useState(true);
   const [hae, setHae] = useState("");
+  const [alkaen, setAlkaen] = useState("");
 
   const handleOpenModal = (id: string) => {
     openModal(
@@ -32,9 +33,21 @@ export const DuuniContent = () => {
       </Suspense>
     );
   };
+  const filteredDuunit = duunit
+    .filter((d) => (kaikki ? true : !d.vastattu))
+    .filter(
+      (d) =>
+        hae.trim() === "" ||
+        d.firma.toLowerCase().includes(hae.toLowerCase()) ||
+        d.title.toLowerCase().includes(hae.toLowerCase())
+    )
+    .filter((d) => {
+      if (!alkaen) return true;
+      return new Date(d.haettu) >= new Date(alkaen);
+    });
 
-  const vastattu = duunit.filter((d) => d.vastattu).length;
-  const eiVastattu = duunit.length - vastattu;
+  const vastattu = filteredDuunit.filter((d) => d.vastattu).length;
+  const eiVastattu = filteredDuunit.length - vastattu;
 
   const columns: Column[] = [
     { key: "haettu", label: "Haettu" },
@@ -45,14 +58,6 @@ export const DuuniContent = () => {
     { key: "extra", label: "Extra" },
   ];
 
-  const filteredDuunit = duunit
-    .filter((d) => (kaikki ? true : !d.vastattu))
-    .filter(
-      (d) =>
-        hae.trim() === "" ||
-        d.firma.toLowerCase().includes(hae.toLowerCase()) ||
-        d.title.toLowerCase().includes(hae.toLowerCase())
-    );
   const renderCellContent = (duuni: Duuni, key: ColumnKey): string => {
     const value = duuni[key];
 
@@ -72,12 +77,20 @@ export const DuuniContent = () => {
 
   return (
     <section>
-      <h2>Yhteensä: {duunit.length} kpl</h2>
+      <h2>Yhteensä: {filteredDuunit.length} kpl</h2>
       <div className="responses">
         <h4>Vastattu: {vastattu}</h4>
         <h4>Ei vastattu: {eiVastattu}</h4>
       </div>
       <div className="show-buttons">
+        <Input
+          type="date"
+          id="alkaen"
+          name="alkean"
+          label="Alkaen"
+          value={alkaen}
+          onChange={(e) => setAlkaen(e.target.value)}
+        />
         <button
           className={kaikki ? "active-btn" : ""}
           onClick={() => setKaikki(true)}
