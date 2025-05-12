@@ -1,0 +1,73 @@
+import { useState, type ChangeEvent, type FormEvent } from "react";
+import { Input } from "../../ui/Input";
+import "./ApplicationModal.css";
+import { type AddDuuni } from "../../../utils/types";
+import { toInputDateValue } from "../../../utils/helperFunctions";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useModal } from "../../../context/useModal";
+import { newDuuni } from "../../../api/duuniApi";
+
+export const ApplicationModal = () => {
+  const queryClient = useQueryClient();
+  const { closeModal } = useModal();
+
+  const [uus, setUus] = useState<AddDuuni>({
+    haettu: toInputDateValue(new Date()),
+    firma: "",
+    title: "",
+  });
+
+  const mutation = useMutation({
+    mutationFn: (data: AddDuuni) => newDuuni(data),
+    onSuccess: (res) => {
+      queryClient.setQueryData(["duunit", res.id], res);
+      queryClient.invalidateQueries({ queryKey: ["duunit"] });
+      closeModal();
+    },
+  });
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setUus((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    mutation.mutate(uus);
+  };
+
+  return (
+    <form className="application-form" onSubmit={handleSubmit}>
+      <h2>Uus hakemus</h2>
+      <Input
+        type="date"
+        placeholder="Hakupvm"
+        label="Hakupvm"
+        id="hakupvm"
+        name="hakupvm"
+        value={uus.haettu}
+        onChange={handleChange}
+      />
+      <Input
+        placeholder="Firma"
+        label="Firma"
+        id="firma"
+        name="firma"
+        value={uus.firma}
+        onChange={handleChange}
+      />
+      <Input
+        placeholder="Titteli"
+        label="Titteli"
+        id="title"
+        name="title"
+        value={uus.title}
+        onChange={handleChange}
+      />
+      <button type="submit">Lisää</button>
+    </form>
+  );
+};

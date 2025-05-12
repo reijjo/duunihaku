@@ -1,0 +1,63 @@
+.wrapper {
+  width: 100%;
+  max-width: 1366px;
+  margin: 0 auto;
+}
+
+button {
+  padding: 0.5rem 1.5rem;
+  height: 2rem;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  border: 1px solid black;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  &:active {
+    scale: 0.925;
+  }
+}
+
+.active-btn {
+  border: 1px solid orange;
+  background-color: black;
+}
+
+.btn-cta {
+  background-color: rgb(255, 189, 66);
+
+  color: black;
+
+  &:hover {
+    background-color: orange;
+  }
+}
+
+input {
+  height: 2rem;
+  color: white;
+  padding: 0 0.5rem;
+  background-color: rgba(36, 36, 36, 0.85);
+  border: 1px solid black;
+  border-radius: 0.5rem;
+
+  &::placeholder {
+    color: white;
+  }
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  text-align: center;
+
+  & > * {
+    width: 100%;
+  }
+}

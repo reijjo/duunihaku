@@ -1,0 +1,10 @@
+.input-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+
+  & label {
+    padding-left: 0.25rem;
+    align-self: start;
+  }
+}
