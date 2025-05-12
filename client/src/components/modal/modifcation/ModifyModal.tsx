@@ -4,7 +4,11 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query";
 import { type ModifyDuuni, type Duuni } from "../../../utils/types";
-import { findDuuniById, updateDuuniById } from "../../../api/duuniApi";
+import {
+  deleteDuuniById,
+  findDuuniById,
+  updateDuuniById,
+} from "../../../api/duuniApi";
 import { formatDate, toInputDateValue } from "../../../utils/helperFunctions";
 import "./ModifyModal.css";
 import { Input } from "../../ui/Input";
@@ -39,6 +43,14 @@ export const ModifyModal = ({ id }: ModifyModalProps) => {
     },
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => deleteDuuniById(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["duunit"] });
+      closeModal();
+    },
+  });
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setUpdateDuuni((prev) => ({
@@ -50,6 +62,10 @@ export const ModifyModal = ({ id }: ModifyModalProps) => {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     mutation.mutate(updateDuuni);
+  };
+
+  const handleDelete = () => {
+    deleteMutation.mutate(id);
   };
 
   return (
@@ -82,6 +98,12 @@ export const ModifyModal = ({ id }: ModifyModalProps) => {
           id="extra"
           onChange={handleChange}
         />
+        <details>
+          <summary>Poista</summary>
+          <button type="button" onClick={handleDelete}>
+            Poista
+          </button>
+        </details>
         <button type="submit">Valmista!</button>
       </div>
     </form>

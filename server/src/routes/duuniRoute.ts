@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   addDuuni,
+  deleteDuuni,
   findDuuniById,
   getAllDuunit,
   updateDuuni,
@@ -13,5 +14,6 @@ router.post("/", addDuuni);
 
 router.get("/:id", findDuuniById);
 router.patch("/:id", updateDuuni);
+router.delete("/:id", deleteDuuni);
 
 export const duuniRouter = router;

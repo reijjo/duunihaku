@@ -59,3 +59,17 @@ export const newDuuni = async (data: AddDuuni): Promise<Duuni> => {
 
   return res.json();
 };
+
+export const deleteDuuniById = async (id: string): Promise<void> => {
+  const res = await fetch(`${BASEURL}/${api}/duuni/${id}`, {
+    method: "DELETE",
+  });
+
+  if (!res.ok) {
+    throw new Error(
+      `Failed to delete duuni ${id}: ${res.status} ${res.statusText}`
+    );
+  }
+
+  return res.json();
+};

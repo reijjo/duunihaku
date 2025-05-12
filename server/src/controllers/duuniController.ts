@@ -93,3 +93,19 @@ export const updateDuuni = async (req: Request, res: Response) => {
 
   res.status(200);
 };
+
+export const deleteDuuni = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const toDelete = await DuuniModel.findByIdAndDelete(id);
+    if (!toDelete) {
+      res.status(404).json({ error: "Duuni not found" });
+      return;
+    }
+    res.status(200).json({ message: "Duuni deleted" });
+  } catch (err) {
+    console.error("Delete error", err);
+    res.status(500).json({ error: "Failed to delete duuni" });
+  }
+};
