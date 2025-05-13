@@ -81,6 +81,7 @@ export const DuuniContent = () => {
       <div className="responses">
         <h4>Vastattu: {vastattu}</h4>
         <h4>Ei vastattu: {eiVastattu}</h4>
+        <h4>Haastattelut: 5</h4>
       </div>
       <div className="show-buttons">
         <Input
