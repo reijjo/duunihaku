@@ -3,28 +3,18 @@ import { Input } from "../../ui/Input";
 import "./ApplicationModal.css";
 import { type AddDuuni } from "../../../utils/types";
 import { toInputDateValue } from "../../../utils/helperFunctions";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useModal } from "../../../context/useModal";
-import { newDuuni } from "../../../api/duuniApi";
+import { useAddDuuni } from "../../../hooks/useAddDuuni";
 
 export const ApplicationModal = () => {
-  const queryClient = useQueryClient();
-  const { closeModal } = useModal();
-
   const [uus, setUus] = useState<AddDuuni>({
     haettu: toInputDateValue(new Date()),
     firma: "",
     title: "",
   });
 
-  const mutation = useMutation({
-    mutationFn: (data: AddDuuni) => newDuuni(data),
-    onSuccess: (res) => {
-      queryClient.setQueryData(["duunit", res.id], res);
-      queryClient.invalidateQueries({ queryKey: ["duunit"] });
-      closeModal();
-    },
-  });
+  const { closeModal } = useModal();
+  const mutation = useAddDuuni(closeModal);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

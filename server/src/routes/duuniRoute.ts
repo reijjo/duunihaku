@@ -7,13 +7,15 @@ import {
   updateDuuni,
 } from "../controllers/duuniController";
 
-const router = Router();
+const routerV1 = Router();
+const routerV2 = Router();
 
-router.get("/", getAllDuunit);
-router.post("/", addDuuni);
+routerV1.get("/", getAllDuunit);
+routerV1.post("/", addDuuni);
 
-router.get("/:id", findDuuniById);
-router.patch("/:id", updateDuuni);
-router.delete("/:id", deleteDuuni);
+routerV1.get("/:id", findDuuniById);
+routerV1.patch("/:id", updateDuuni);
+routerV1.delete("/:id", deleteDuuni);
 
-export const duuniRouter = router;
+export const duuniRouterV1 = routerV1;
+export const duuniRouterV2 = routerV2;

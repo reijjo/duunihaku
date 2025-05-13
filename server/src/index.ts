@@ -2,7 +2,7 @@ import express from "express";
 import morgan from "morgan";
 import cors from "cors";
 import { mongoConnect } from "./db/db";
-import { duuniRouter } from "./routes/duuniRoute";
+import { duuniRouterV1, duuniRouterV2 } from "./routes/duuniRoute";
 import { notFoundHandler } from "./middleware/notFound";
 
 const app = express();
@@ -14,7 +14,8 @@ app.use(morgan("dev"));
 
 mongoConnect();
 
-app.use("/api/v1/duuni", duuniRouter);
+app.use("/api/v1/duuni", duuniRouterV1);
+app.use("/api/v2/duuni", duuniRouterV2);
 
 app.use(notFoundHandler);
 

@@ -1,15 +1,28 @@
-import { useState, type ChangeEvent } from "react";
+import { type ChangeEvent, type Dispatch, type SetStateAction } from "react";
 import { Input } from "../components/ui/Input";
 
-export const DuuniFilters = () => {
-  const [hae, setHae] = useState("");
-  const [alkaen, setAlkaen] = useState("");
-  const [kaikki, setKaikki] = useState(true);
+interface DuuniFiltersProps {
+  hae: string;
+  setHae: (value: string) => void;
+  alkaen: string;
+  setAlkaen: Dispatch<SetStateAction<string>>;
+  kaikki: boolean;
+  setKaikki: Dispatch<SetStateAction<boolean>>;
+}
 
+export const DuuniFilters = ({
+  hae,
+  setHae,
+  alkaen,
+  setAlkaen,
+  kaikki,
+  setKaikki,
+}: DuuniFiltersProps) => {
   const handleHae = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setHae(value);
   };
+
   return (
     <div className="show-buttons">
       <Input

@@ -8,5 +8,5 @@ export type Duuni = {
   extra: string;
 };
 
-export type ModifyDuuni = Omit<Duuni, "id" | "firma" | "title" | "haettu">;
+export type ModifyDuuni = Omit<Duuni, "id" | "haettu">;
 export type AddDuuni = Omit<Duuni, "id" | "vastattu" | "vastaus" | "extra">;

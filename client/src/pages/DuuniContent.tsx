@@ -5,9 +5,10 @@ import { useModal } from "../context/useModal";
 import { Modal } from "../components/modal/Modal";
 import { ModifyModal } from "../components/modal/modifcation/ModifyModal";
 import { formatDate } from "../utils/helperFunctions";
-import { Suspense, useState, type ChangeEvent } from "react";
+import { Suspense } from "react";
 import { Loading } from "../components/Loading";
-import { Input } from "../components/ui/Input";
+import { useFilteredDuunit } from "../hooks/useFilteredDuunit";
+import { DuuniFilters } from "./DuuniFilters";
 
 type ColumnKey = keyof Duuni;
 
@@ -22,9 +23,15 @@ export const DuuniContent = () => {
     queryFn: getDuunit,
   });
   const { isOpen, openModal, closeModal, modalContent } = useModal();
-  const [kaikki, setKaikki] = useState(true);
-  const [hae, setHae] = useState("");
-  const [alkaen, setAlkaen] = useState("");
+  const {
+    kaikki,
+    setKaikki,
+    hae,
+    setHae,
+    alkaen,
+    setAlkaen,
+    filtered: filteredDuunit,
+  } = useFilteredDuunit(duunit);
 
   const handleOpenModal = (id: string) => {
     openModal(
@@ -33,18 +40,6 @@ export const DuuniContent = () => {
       </Suspense>
     );
   };
-  const filteredDuunit = duunit
-    .filter((d) => (kaikki ? true : !d.vastattu))
-    .filter(
-      (d) =>
-        hae.trim() === "" ||
-        d.firma.toLowerCase().includes(hae.toLowerCase()) ||
-        d.title.toLowerCase().includes(hae.toLowerCase())
-    )
-    .filter((d) => {
-      if (!alkaen) return true;
-      return new Date(d.haettu) >= new Date(alkaen);
-    });
 
   const vastattu = filteredDuunit.filter((d) => d.vastattu).length;
   const eiVastattu = filteredDuunit.length - vastattu;
@@ -70,11 +65,6 @@ export const DuuniContent = () => {
     return value !== undefined && value !== null ? String(value) : "-";
   };
 
-  const handleHae = (e: ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    setHae(value);
-  };
-
   return (
     <section>
       <h2>Yhteensä: {filteredDuunit.length} kpl</h2>
@@ -83,7 +73,15 @@ export const DuuniContent = () => {
         <h4>Ei vastattu: {eiVastattu}</h4>
         <h4>Haastattelut: 5</h4>
       </div>
-      <div className="show-buttons">
+      <DuuniFilters
+        hae={hae}
+        setHae={setHae}
+        alkaen={alkaen}
+        setAlkaen={setAlkaen}
+        kaikki={kaikki}
+        setKaikki={setKaikki}
+      />
+      {/* <div className="show-buttons">
         <Input
           type="date"
           id="alkaen"
@@ -115,7 +113,7 @@ export const DuuniContent = () => {
           />
           <button onClick={() => setHae("")}>Tyhjennä</button>
         </div>
-      </div>
+      </div> */}
       <div className="otsikot">
         {columns.map((col) => (
           <div key={col.key}>

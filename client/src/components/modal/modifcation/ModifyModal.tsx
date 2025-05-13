@@ -1,63 +1,16 @@
-import {
-  useMutation,
-  useQueryClient,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
-import { type ModifyDuuni, type Duuni } from "../../../utils/types";
-import {
-  deleteDuuniById,
-  findDuuniById,
-  updateDuuniById,
-} from "../../../api/duuniApi";
-import { formatDate, toInputDateValue } from "../../../utils/helperFunctions";
+import { formatDate } from "../../../utils/helperFunctions";
 import "./ModifyModal.css";
 import { Input } from "../../ui/Input";
-import { useState, type ChangeEvent, type FormEvent } from "react";
-import { useModal } from "../../../context/useModal";
+import { type FormEvent } from "react";
+import { useModifyDuuni } from "../../../hooks/useModifyDuuni";
 
 interface ModifyModalProps {
   id: string;
 }
 
 export const ModifyModal = ({ id }: ModifyModalProps) => {
-  const queryClient = useQueryClient();
-  const { closeModal } = useModal();
-
-  const { data: duuni } = useSuspenseQuery<Duuni>({
-    queryKey: ["duunit", id],
-    queryFn: () => findDuuniById(id),
-  });
-
-  const [updateDuuni, setUpdateDuuni] = useState<ModifyDuuni>({
-    vastattu: duuni.vastattu ? toInputDateValue(new Date(duuni.vastattu)) : "",
-    vastaus: duuni.vastaus ?? "",
-    extra: duuni.extra ?? "",
-  });
-
-  const mutation = useMutation({
-    mutationFn: (data: ModifyDuuni) => updateDuuniById(id, data),
-    onSuccess: (updateDuuni) => {
-      queryClient.setQueryData(["duunit", id], updateDuuni);
-      queryClient.invalidateQueries({ queryKey: ["duunit"] });
-      closeModal();
-    },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: (id: string) => deleteDuuniById(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["duunit"] });
-      closeModal();
-    },
-  });
-
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setUpdateDuuni((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  const { mutation, updateDuuni, deleteMutation, duuni, handleChange } =
+    useModifyDuuni(id);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -98,11 +51,32 @@ export const ModifyModal = ({ id }: ModifyModalProps) => {
           id="extra"
           onChange={handleChange}
         />
-        <details>
-          <summary>Poista</summary>
-          <button type="button" onClick={handleDelete}>
-            Poista
-          </button>
+        <details className="eka-details">
+          <summary>Lisää</summary>
+          <div>
+            <Input
+              type="text"
+              label="Firma"
+              id="firma"
+              name="firma"
+              onChange={handleChange}
+              value={updateDuuni.firma}
+            />
+            <Input
+              type="text"
+              label="Titteli"
+              id="title"
+              name="title"
+              onChange={handleChange}
+              value={updateDuuni.title}
+            />
+          </div>
+          <details className="toka-details">
+            <summary>Poista</summary>
+            <button type="button" onClick={handleDelete}>
+              Poista
+            </button>
+          </details>
         </details>
         <button type="submit">Valmista!</button>
       </div>
