@@ -3,16 +3,6 @@ import type { AddDuuni, Duuni, ModifyDuuni } from "../utils/types";
 const BASEURL = "http://localhost:3001";
 const api = "api/v1";
 
-export const getDuunit = async (): Promise<Duuni[]> => {
-  const res = await fetch(`${BASEURL}/${api}/duuni`);
-
-  if (!res.ok) {
-    throw new Error(`Failed to fetch duunit: ${res.status} ${res.statusText}`);
-  }
-
-  return res.json();
-};
-
 export const findDuuniById = async (id: string): Promise<Duuni> => {
   const res = await fetch(`${BASEURL}/${api}/duuni/${id}`);
 

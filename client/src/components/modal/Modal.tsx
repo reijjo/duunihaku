@@ -1,13 +1,17 @@
+import { useModalStore } from "../../stores/modalStore";
 import "./Modal.css";
-import type { ReactNode } from "react";
+// import type { ReactNode } from "react";
 
-interface ModalProps {
-  isOpen: boolean;
-  closeModal: () => void;
-  modalContent: ReactNode | null;
-}
+// interface ModalProps {
+//   isOpen: boolean;
+//   closeModal: () => void;
+//   modalContent: ReactNode | null;
+// }
 
-export const Modal = ({ isOpen, closeModal, modalContent }: ModalProps) => {
+// export const Modal = ({ isOpen, closeModal, modalContent }: ModalProps) => {
+export const Modal = () => {
+  const { isOpen, modalContent, closeModal } = useModalStore();
+
   if (!isOpen) return null;
 
   return (

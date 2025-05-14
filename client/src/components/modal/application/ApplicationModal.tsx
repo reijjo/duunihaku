@@ -1,10 +1,10 @@
+import "./ApplicationModal.css";
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import { Input } from "../../ui/Input";
-import "./ApplicationModal.css";
 import { type AddDuuni } from "../../../utils/types";
 import { toInputDateValue } from "../../../utils/helperFunctions";
-import { useModal } from "../../../context/useModal";
 import { useAddDuuni } from "../../../hooks/useAddDuuni";
+import { useModalStore } from "../../../stores/modalStore";
 
 export const ApplicationModal = () => {
   const [uus, setUus] = useState<AddDuuni>({
@@ -13,7 +13,7 @@ export const ApplicationModal = () => {
     title: "",
   });
 
-  const { closeModal } = useModal();
+  const { closeModal } = useModalStore();
   const mutation = useAddDuuni(closeModal);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {

@@ -1,13 +1,13 @@
-import { Suspense } from "react";
 import "./Duunit.css";
+import { Suspense } from "react";
 import { Loading } from "../components/Loading";
 import { DuuniContent } from "./DuuniContent";
-import { useModal } from "../context/useModal";
 import { Modal } from "../components/modal/Modal";
 import { ApplicationModal } from "../components/modal/application/ApplicationModal";
+import { useModalStore } from "../stores/modalStore";
 
 const Duunit = () => {
-  const { isOpen, openModal, closeModal, modalContent } = useModal();
+  const { openModal } = useModalStore();
 
   const handleOpenModal = () => {
     openModal(<ApplicationModal />);
@@ -27,11 +27,7 @@ const Duunit = () => {
         </Suspense>
       </section>
 
-      <Modal
-        isOpen={isOpen}
-        closeModal={closeModal}
-        modalContent={modalContent}
-      />
+      <Modal />
     </main>
   );
 };

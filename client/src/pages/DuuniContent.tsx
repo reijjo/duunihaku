@@ -1,14 +1,16 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { getDuunit } from "../api/duuniApi";
+// import { useSuspenseQuery } from "@tanstack/react-query";
 import type { Duuni } from "../utils/types";
-import { useModal } from "../context/useModal";
-import { Modal } from "../components/modal/Modal";
+// import { useModal } from "../context/useModal";
+// import { Modal } from "../components/modal/Modal";
 import { ModifyModal } from "../components/modal/modifcation/ModifyModal";
 import { formatDate } from "../utils/helperFunctions";
 import { Suspense } from "react";
 import { Loading } from "../components/Loading";
 import { useFilteredDuunit } from "../hooks/useFilteredDuunit";
 import { DuuniFilters } from "./DuuniFilters";
+import { GET_ALL_DUUNIT } from "../graphql/queries";
+import { useSuspenseQuery } from "@apollo/client/react";
+import { useModalStore } from "../stores/modalStore";
 
 type ColumnKey = keyof Duuni;
 
@@ -18,11 +20,9 @@ type Column = {
 };
 
 export const DuuniContent = () => {
-  const { data: duunit = [] } = useSuspenseQuery<Duuni[]>({
-    queryKey: ["duunit"],
-    queryFn: getDuunit,
-  });
-  const { isOpen, openModal, closeModal, modalContent } = useModal();
+  const { data } = useSuspenseQuery<{ getAllDuunit: Duuni[] }>(GET_ALL_DUUNIT);
+  const { openModal } = useModalStore();
+  // const { isOpen, openModal, closeModal, modalContent } = useModal();
   const {
     kaikki,
     setKaikki,
@@ -31,7 +31,7 @@ export const DuuniContent = () => {
     alkaen,
     setAlkaen,
     filtered: filteredDuunit,
-  } = useFilteredDuunit(duunit);
+  } = useFilteredDuunit(data?.getAllDuunit ?? []);
 
   const handleOpenModal = (id: string) => {
     openModal(
@@ -81,39 +81,6 @@ export const DuuniContent = () => {
         kaikki={kaikki}
         setKaikki={setKaikki}
       />
-      {/* <div className="show-buttons">
-        <Input
-          type="date"
-          id="alkaen"
-          name="alkean"
-          label="Alkaen"
-          value={alkaen}
-          onChange={(e) => setAlkaen(e.target.value)}
-        />
-        <button
-          className={kaikki ? "active-btn" : ""}
-          onClick={() => setKaikki(true)}
-        >
-          Kaikki
-        </button>
-        <button
-          className={!kaikki ? "active-btn" : ""}
-          onClick={() => setKaikki(false)}
-        >
-          Ei Vastatut
-        </button>
-        <div className="search">
-          <Input
-            type="text"
-            placeholder="Hae..."
-            value={hae}
-            id="hae"
-            name="hae"
-            onChange={handleHae}
-          />
-          <button onClick={() => setHae("")}>Tyhjennä</button>
-        </div>
-      </div> */}
       <div className="otsikot">
         {columns.map((col) => (
           <div key={col.key}>
@@ -136,11 +103,11 @@ export const DuuniContent = () => {
           ))}
         </div>
       )}
-      <Modal
+      {/* <Modal
         isOpen={isOpen}
         closeModal={closeModal}
         modalContent={modalContent}
-      />
+      /> */}
     </section>
   );
 };

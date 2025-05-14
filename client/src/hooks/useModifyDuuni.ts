@@ -3,7 +3,6 @@ import {
   useQueryClient,
   useSuspenseQuery,
 } from "@tanstack/react-query";
-import { useModal } from "../context/useModal";
 import { useState, type ChangeEvent } from "react";
 import {
   findDuuniById,
@@ -12,10 +11,11 @@ import {
 } from "../api/duuniApi";
 import { toInputDateValue } from "../utils/helperFunctions";
 import type { Duuni, ModifyDuuni } from "../utils/types";
+import { useModalStore } from "../stores/modalStore";
 
 export const useModifyDuuni = (id: string) => {
   const queryClient = useQueryClient();
-  const { closeModal } = useModal();
+  const { closeModal } = useModalStore();
 
   const { data: duuni } = useSuspenseQuery<Duuni>({
     queryKey: ["duunit", id],
