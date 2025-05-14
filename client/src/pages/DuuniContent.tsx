@@ -1,7 +1,4 @@
-// import { useSuspenseQuery } from "@tanstack/react-query";
 import type { Duuni } from "../utils/types";
-// import { useModal } from "../context/useModal";
-// import { Modal } from "../components/modal/Modal";
 import { ModifyModal } from "../components/modal/modifcation/ModifyModal";
 import { formatDate } from "../utils/helperFunctions";
 import { Suspense } from "react";
@@ -11,6 +8,8 @@ import { DuuniFilters } from "./DuuniFilters";
 import { GET_ALL_DUUNIT } from "../graphql/queries";
 import { useSuspenseQuery } from "@apollo/client/react";
 import { useModalStore } from "../stores/modalStore";
+import { ErrorBoundary } from "react-error-boundary";
+import { ErrorFallback } from "../components/ErrorFallback";
 
 type ColumnKey = keyof Duuni;
 
@@ -22,7 +21,6 @@ type Column = {
 export const DuuniContent = () => {
   const { data } = useSuspenseQuery<{ getAllDuunit: Duuni[] }>(GET_ALL_DUUNIT);
   const { openModal } = useModalStore();
-  // const { isOpen, openModal, closeModal, modalContent } = useModal();
   const {
     kaikki,
     setKaikki,
@@ -35,9 +33,11 @@ export const DuuniContent = () => {
 
   const handleOpenModal = (id: string) => {
     openModal(
-      <Suspense fallback={<Loading />}>
-        <ModifyModal id={id} />
-      </Suspense>
+      <ErrorBoundary FallbackComponent={ErrorFallback}>
+        <Suspense fallback={<Loading />}>
+          <ModifyModal id={id} />
+        </Suspense>
+      </ErrorBoundary>
     );
   };
 
@@ -103,11 +103,6 @@ export const DuuniContent = () => {
           ))}
         </div>
       )}
-      {/* <Modal
-        isOpen={isOpen}
-        closeModal={closeModal}
-        modalContent={modalContent}
-      /> */}
     </section>
   );
 };

@@ -2,7 +2,7 @@ import { Router } from "express";
 import {
   addDuuni,
   deleteDuuni,
-  findDuuniById,
+  // findDuuniById,
   getAllDuunit,
   updateDuuni,
 } from "../controllers/duuniController";
@@ -13,7 +13,7 @@ const routerV2 = Router();
 routerV1.get("/", getAllDuunit);
 routerV1.post("/", addDuuni);
 
-routerV1.get("/:id", findDuuniById);
+// routerV1.get("/:id", findDuuniById);
 routerV1.patch("/:id", updateDuuni);
 routerV1.delete("/:id", deleteDuuni);
 

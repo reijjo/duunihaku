@@ -17,6 +17,7 @@ export const typeDefs = `
 
   type Query {
     getAllDuunit: [Duuni!]!
+    findDuuniById(id: ID!): Duuni
   }
 `;
 
@@ -29,9 +30,24 @@ export const resolvers = {
         firma: duuni.firma,
         title: duuni.title,
         haettu: duuni.haettu ? duuni.haettu.toISOString() : null,
+        vastaus: duuni.vastaus,
         vastattu: duuni.vastattu ? duuni.vastattu.toISOString() : null,
         extra: duuni.extra,
       }));
+    },
+    findDuuniById: async (_parent: unknown, args: { id: string }) => {
+      const duuni = await DuuniModel.findById(args.id);
+      if (!duuni) return null;
+
+      return {
+        id: duuni.id,
+        firma: duuni.firma,
+        title: duuni.title,
+        haettu: duuni.haettu ? duuni.haettu.toISOString() : null,
+        vastattu: duuni.vastattu ? duuni.vastattu.toISOString() : null,
+        vastaus: duuni.vastaus ?? "",
+        extra: duuni.extra ?? "",
+      };
     },
     hello: () => "Hello world from GraphQL!",
   },

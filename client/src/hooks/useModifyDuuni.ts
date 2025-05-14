@@ -1,33 +1,44 @@
 import {
   useMutation,
   useQueryClient,
-  useSuspenseQuery,
+  // useSuspenseQuery,
 } from "@tanstack/react-query";
 import { useState, type ChangeEvent } from "react";
 import {
-  findDuuniById,
+  // findDuuniById,
   updateDuuniById,
   deleteDuuniById,
 } from "../api/duuniApi";
 import { toInputDateValue } from "../utils/helperFunctions";
 import type { Duuni, ModifyDuuni } from "../utils/types";
 import { useModalStore } from "../stores/modalStore";
+import { FIND_DUUNI_BY_ID } from "../graphql/queries";
+import { useSuspenseQuery } from "@apollo/client";
 
 export const useModifyDuuni = (id: string) => {
   const queryClient = useQueryClient();
   const { closeModal } = useModalStore();
 
-  const { data: duuni } = useSuspenseQuery<Duuni>({
-    queryKey: ["duunit", id],
-    queryFn: () => findDuuniById(id),
-  });
+  // const { data: duuni } = useSuspenseQuery<Duuni>({
+  //   queryKey: ["duunit", id],
+  //   queryFn: () => findDuuniById(id),
+  // });
+
+  const { data: duuni } = useSuspenseQuery<{ findDuuniById: Duuni }>(
+    FIND_DUUNI_BY_ID,
+    {
+      variables: { id },
+    }
+  );
 
   const [updateDuuni, setUpdateDuuni] = useState<ModifyDuuni>({
-    firma: duuni.firma,
-    title: duuni.title,
-    vastattu: duuni.vastattu ? toInputDateValue(new Date(duuni.vastattu)) : "",
-    vastaus: duuni.vastaus ?? "",
-    extra: duuni.extra ?? "",
+    firma: duuni.findDuuniById.firma,
+    title: duuni.findDuuniById.title,
+    vastattu: duuni.findDuuniById.vastattu
+      ? toInputDateValue(new Date(duuni.findDuuniById.vastattu))
+      : "",
+    vastaus: duuni.findDuuniById.vastaus ?? "",
+    extra: duuni.findDuuniById.extra ?? "",
   });
 
   const mutation = useMutation({
@@ -59,7 +70,7 @@ export const useModifyDuuni = (id: string) => {
     mutation,
     updateDuuni,
     deleteMutation,
-    duuni,
+    duuni: duuni.findDuuniById,
     handleChange,
   };
 };
