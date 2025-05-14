@@ -1,28 +1,14 @@
-import {
-  useMutation,
-  useQueryClient,
-  // useSuspenseQuery,
-} from "@tanstack/react-query";
 import { useState, type ChangeEvent } from "react";
-import {
-  // findDuuniById,
-  updateDuuniById,
-  deleteDuuniById,
-} from "../api/duuniApi";
+
 import { toInputDateValue } from "../utils/helperFunctions";
 import type { Duuni, ModifyDuuni } from "../utils/types";
 import { useModalStore } from "../stores/modalStore";
-import { FIND_DUUNI_BY_ID } from "../graphql/queries";
-import { useSuspenseQuery } from "@apollo/client";
+import { FIND_DUUNI_BY_ID, GET_ALL_DUUNIT } from "../graphql/queries";
+import { useMutation, useSuspenseQuery } from "@apollo/client";
+import { UPDATE_DUUNI } from "../graphql/mutations";
 
 export const useModifyDuuni = (id: string) => {
-  const queryClient = useQueryClient();
   const { closeModal } = useModalStore();
-
-  // const { data: duuni } = useSuspenseQuery<Duuni>({
-  //   queryKey: ["duunit", id],
-  //   queryFn: () => findDuuniById(id),
-  // });
 
   const { data: duuni } = useSuspenseQuery<{ findDuuniById: Duuni }>(
     FIND_DUUNI_BY_ID,
@@ -30,6 +16,12 @@ export const useModifyDuuni = (id: string) => {
       variables: { id },
     }
   );
+  const [updateMutation] = useMutation(UPDATE_DUUNI, {
+    onCompleted: () => {
+      closeModal();
+    },
+    refetchQueries: [GET_ALL_DUUNIT, "GetAllDuunit"],
+  });
 
   const [updateDuuni, setUpdateDuuni] = useState<ModifyDuuni>({
     firma: duuni.findDuuniById.firma,
@@ -41,22 +33,26 @@ export const useModifyDuuni = (id: string) => {
     extra: duuni.findDuuniById.extra ?? "",
   });
 
-  const mutation = useMutation({
-    mutationFn: (data: ModifyDuuni) => updateDuuniById(id, data),
-    onSuccess: (updateDuuni) => {
-      queryClient.setQueryData(["duunit", id], updateDuuni);
-      queryClient.invalidateQueries({ queryKey: ["duunit"] });
-      closeModal();
+  const mutation = {
+    mutate: () => {
+      updateMutation({
+        variables: {
+          id,
+          input: {
+            ...updateDuuni,
+          },
+        },
+      });
     },
-  });
+  };
 
-  const deleteMutation = useMutation({
-    mutationFn: (id: string) => deleteDuuniById(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["duunit"] });
-      closeModal();
-    },
-  });
+  // const deleteMutation = useMutation({
+  //   mutationFn: (id: string) => deleteDuuniById(id),
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries({ queryKey: ["duunit"] });
+  //     closeModal();
+  //   },
+  // });
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -69,7 +65,7 @@ export const useModifyDuuni = (id: string) => {
   return {
     mutation,
     updateDuuni,
-    deleteMutation,
+    // deleteMutation,
     duuni: duuni.findDuuniById,
     handleChange,
   };

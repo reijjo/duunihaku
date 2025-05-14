@@ -9,16 +9,15 @@ interface ModifyModalProps {
 }
 
 export const ModifyModal = ({ id }: ModifyModalProps) => {
-  const { mutation, updateDuuni, deleteMutation, duuni, handleChange } =
-    useModifyDuuni(id);
+  const { mutation, updateDuuni, duuni, handleChange } = useModifyDuuni(id);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    mutation.mutate(updateDuuni);
+    mutation.mutate();
   };
 
   const handleDelete = () => {
-    deleteMutation.mutate(id);
+    // deleteMutation.mutate(id);
   };
 
   return (

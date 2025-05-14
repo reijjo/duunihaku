@@ -1,3 +1,4 @@
+import type { Duuni } from "../utils/types";
 import DuuniModel from "./models/duuniModel";
 
 export const typeDefs = `
@@ -18,6 +19,19 @@ export const typeDefs = `
   type Query {
     getAllDuunit: [Duuni!]!
     findDuuniById(id: ID!): Duuni
+  }
+
+    type Mutation {
+    updateDuuni(id: ID!, input: UpdateDuuniInput!): Duuni
+  }
+
+  input UpdateDuuniInput {
+    firma: String
+    title: String
+    haettu: String
+    vastattu: String
+    vastaus: String
+    extra: String
   }
 `;
 
@@ -50,5 +64,35 @@ export const resolvers = {
       };
     },
     hello: () => "Hello world from GraphQL!",
+  },
+  Mutation: {
+    updateDuuni: async (
+      _parent: unknown,
+      args: { id: string; input: Partial<Duuni> }
+    ) => {
+      const { id, input } = args;
+
+      const updatedData = {
+        ...input,
+        haettu: input.haettu ? new Date(input.haettu) : undefined,
+        vastattu: input.vastattu ? new Date(input.vastattu) : undefined,
+      };
+
+      const updatedDuuni = await DuuniModel.findByIdAndUpdate(id, updatedData, {
+        new: true,
+      });
+
+      if (!updatedDuuni) return null;
+
+      return {
+        id: updatedDuuni.id,
+        firma: updatedDuuni.firma,
+        title: updatedDuuni.title,
+        haettu: updatedDuuni.haettu?.toISOString() ?? null,
+        vastattu: updatedDuuni.vastattu?.toISOString() ?? null,
+        vastaus: updatedDuuni.vastaus ?? "",
+        extra: updatedDuuni.extra ?? "",
+      };
+    },
   },
 };
