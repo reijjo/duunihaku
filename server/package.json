@@ -4,12 +4,12 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "bun --watch src/index.ts"
+    "dev": "bun --watch src/index.ts",
+    "clean": "rm -rf node_modules bun.lock"
   },
   "devDependencies": {
     "@types/bun": "^1.2.13",
     "@types/cors": "^2.8.18",
-    "@types/express": "^5.0.1",
     "@types/morgan": "^1.9.9",
     "morgan": "^1.10.0"
   },
@@ -17,8 +17,10 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "@apollo/server": "^4.12.0",
     "cors": "^2.8.5",
-    "express": "^5.1.0",
+    "express": "^4",
+    "graphql": "^16.11.0",
     "mongoose": "^8.14.2"
   }
 }
