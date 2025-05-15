@@ -5,7 +5,7 @@ import type { Duuni, ModifyDuuni } from "../utils/types";
 import { useModalStore } from "../stores/modalStore";
 import { FIND_DUUNI_BY_ID, GET_ALL_DUUNIT } from "../graphql/queries";
 import { useMutation, useSuspenseQuery } from "@apollo/client";
-import { UPDATE_DUUNI } from "../graphql/mutations";
+import { DELETE_DUUNI, UPDATE_DUUNI } from "../graphql/mutations";
 
 export const useModifyDuuni = (id: string) => {
   const { closeModal } = useModalStore();
@@ -17,6 +17,13 @@ export const useModifyDuuni = (id: string) => {
     }
   );
   const [updateMutation] = useMutation(UPDATE_DUUNI, {
+    onCompleted: () => {
+      closeModal();
+    },
+    refetchQueries: [GET_ALL_DUUNIT, "GetAllDuunit"],
+  });
+  const [deleteMutation] = useMutation(DELETE_DUUNI, {
+    variables: { id },
     onCompleted: () => {
       closeModal();
     },
@@ -65,7 +72,7 @@ export const useModifyDuuni = (id: string) => {
   return {
     mutation,
     updateDuuni,
-    // deleteMutation,
+    deleteMutation,
     duuni: duuni.findDuuniById,
     handleChange,
   };

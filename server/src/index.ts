@@ -3,7 +3,6 @@ import morgan from "morgan";
 import cors from "cors";
 import http from "http";
 import { mongoConnect } from "./db/db";
-import { duuniRouterV1, duuniRouterV2 } from "./routes/duuniRoute";
 import { notFoundHandler } from "./middleware/notFound";
 import { ApolloServer } from "@apollo/server";
 import { envs } from "./utils";
@@ -37,7 +36,6 @@ app.use(
   })
 );
 
-app.use("/api/v1/duuni", duuniRouterV1);
 app.use(notFoundHandler);
 
 await new Promise<void>((resolve) => {

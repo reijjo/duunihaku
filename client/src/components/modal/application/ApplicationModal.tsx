@@ -3,18 +3,25 @@ import { useState, type ChangeEvent, type FormEvent } from "react";
 import { Input } from "../../ui/Input";
 import { type AddDuuni } from "../../../utils/types";
 import { toInputDateValue } from "../../../utils/helperFunctions";
-import { useAddDuuni } from "../../../hooks/useAddDuuni";
+import { useMutation } from "@apollo/client";
+import { ADD_DUUNI } from "../../../graphql/mutations";
+// import { useAddDuuni } from "../../../hooks/useAddDuuni";
 import { useModalStore } from "../../../stores/modalStore";
+import { GET_ALL_DUUNIT } from "../../../graphql/queries";
 
 export const ApplicationModal = () => {
+  const { closeModal } = useModalStore();
   const [uus, setUus] = useState<AddDuuni>({
     haettu: toInputDateValue(new Date()),
     firma: "",
     title: "",
   });
-
-  const { closeModal } = useModalStore();
-  const mutation = useAddDuuni(closeModal);
+  const [addMutation] = useMutation(ADD_DUUNI, {
+    onCompleted: () => {
+      closeModal();
+    },
+    refetchQueries: [GET_ALL_DUUNIT, "GetAllDuunit"],
+  });
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -26,7 +33,13 @@ export const ApplicationModal = () => {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    mutation.mutate(uus);
+    addMutation({
+      variables: {
+        input: {
+          ...uus,
+        },
+      },
+    });
   };
 
   return (

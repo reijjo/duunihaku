@@ -13,3 +13,19 @@ export const UPDATE_DUUNI = gql`
     }
   }
 `;
+
+export const ADD_DUUNI = gql`
+  mutation AddDuuni($input: AddDuuniInput!) {
+    addDuuni(input: $input) {
+      haettu
+      firma
+      title
+    }
+  }
+`;
+
+export const DELETE_DUUNI = gql`
+  mutation DeleteDuuni($id: ID!) {
+    deleteDuuni(id: $id)
+  }
+`;

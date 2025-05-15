@@ -2,10 +2,6 @@ import type { Duuni } from "../utils/types";
 import DuuniModel from "./models/duuniModel";
 
 export const typeDefs = `
-  type Query {
-    hello: String
-  }
-
   type Duuni {
     id: ID!
     firma: String!
@@ -23,6 +19,14 @@ export const typeDefs = `
 
     type Mutation {
     updateDuuni(id: ID!, input: UpdateDuuniInput!): Duuni
+    addDuuni(input: AddDuuniInput!): Duuni
+    deleteDuuni(id: ID!): String
+  }
+
+  input AddDuuniInput {
+    haettu: String!
+    firma: String!
+    title: String!
   }
 
   input UpdateDuuniInput {
@@ -63,7 +67,6 @@ export const resolvers = {
         extra: duuni.extra ?? "",
       };
     },
-    hello: () => "Hello world from GraphQL!",
   },
   Mutation: {
     updateDuuni: async (
@@ -93,6 +96,41 @@ export const resolvers = {
         vastaus: updatedDuuni.vastaus ?? "",
         extra: updatedDuuni.extra ?? "",
       };
+    },
+    addDuuni: async (_parent: unknown, args: { input: Partial<Duuni> }) => {
+      const { input } = args;
+
+      if (!input.firma || !input.title) {
+        throw new Error("firma or title is missing");
+      }
+
+      const duuni = new DuuniModel({
+        haettu: input.haettu,
+        firma: input.firma,
+        title: input.title,
+      });
+
+      try {
+        const savedDuuni = await duuni.save();
+        return savedDuuni;
+      } catch (err) {
+        console.error("Failed to save duuni", err);
+        throw new Error("Failed to save duuni");
+      }
+    },
+    deleteDuuni: async (_parent: unknown, args: { id: string }) => {
+      const { id } = args;
+
+      try {
+        const deleted = await DuuniModel.findByIdAndDelete(id);
+        if (!deleted) {
+          throw new Error("Duuni not found");
+        }
+        return "Duuni deleted successfully";
+      } catch (err) {
+        console.error("Failed to delete duuni", err);
+        throw new Error("Failed to delete duuni");
+      }
     },
   },
 };
