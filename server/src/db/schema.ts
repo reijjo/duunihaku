@@ -12,8 +12,13 @@ export const typeDefs = `
     extra: String
   }
 
+  enum SortOption {
+    DATE
+    ALPHA
+  }
+
   type Query {
-    getAllDuunit: [Duuni!]!
+    getAllDuunit(sortBy: SortOption): [Duuni!]!
     findDuuniById(id: ID!): Duuni
   }
 
@@ -41,8 +46,12 @@ export const typeDefs = `
 
 export const resolvers = {
   Query: {
-    getAllDuunit: async () => {
-      const duunit = await DuuniModel.find({}).sort({ haettu: -1 });
+    getAllDuunit: async (_parent: unknown, args: { sortBy?: string }) => {
+      const sortOption: Record<string, 1 | -1> =
+        args.sortBy === "ALPHA" ? { firma: 1 } : { haettu: -1 };
+
+      const duunit = await DuuniModel.find({}).sort(sortOption);
+
       return duunit.map((duuni) => ({
         id: duuni.id,
         firma: duuni.firma,

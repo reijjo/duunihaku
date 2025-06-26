@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const GET_ALL_DUUNIT = gql`
-  query GetAllDuunit {
-    getAllDuunit {
+  query GetAllDuunit($sortBy: SortOption) {
+    getAllDuunit(sortBy: $sortBy) {
       id
       firma
       title

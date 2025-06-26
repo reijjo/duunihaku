@@ -1,7 +1,7 @@
 import type { Duuni } from "../utils/types";
 import { ModifyModal } from "../components/modal/modifcation/ModifyModal";
 import { formatDate } from "../utils/helperFunctions";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import { Loading } from "../components/Loading";
 import { useFilteredDuunit } from "../hooks/useFilteredDuunit";
 import { DuuniFilters } from "./DuuniFilters";
@@ -19,7 +19,11 @@ type Column = {
 };
 
 export const DuuniContent = () => {
-  const { data } = useSuspenseQuery<{ getAllDuunit: Duuni[] }>(GET_ALL_DUUNIT);
+  const [uusimmat, setUusimmat] = useState(true);
+
+  const { data } = useSuspenseQuery<{ getAllDuunit: Duuni[] }>(GET_ALL_DUUNIT, {
+    variables: { sortBy: uusimmat ? "DATE" : "ALPHA" },
+  });
   const { openModal } = useModalStore();
   const {
     kaikki,
@@ -80,6 +84,8 @@ export const DuuniContent = () => {
         setAlkaen={setAlkaen}
         kaikki={kaikki}
         setKaikki={setKaikki}
+        uusimmat={uusimmat}
+        setUusimmat={setUusimmat}
       />
       <div className="otsikot">
         {columns.map((col) => (

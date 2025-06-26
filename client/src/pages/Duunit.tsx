@@ -5,6 +5,8 @@ import { DuuniContent } from "./DuuniContent";
 import { Modal } from "../components/modal/Modal";
 import { ApplicationModal } from "../components/modal/application/ApplicationModal";
 import { useModalStore } from "../stores/modalStore";
+import { ErrorBoundary } from "react-error-boundary";
+import { ErrorFallback } from "../components/ErrorFallback";
 
 const Duunit = () => {
   const { openModal } = useModalStore();
@@ -22,9 +24,11 @@ const Duunit = () => {
             Lisää hakemus
           </button>
         </div>
-        <Suspense fallback={<Loading text="Ladataan hakemuksia..." />}>
-          <DuuniContent />
-        </Suspense>
+        <ErrorBoundary FallbackComponent={ErrorFallback}>
+          <Suspense fallback={<Loading text="Ladataan hakemuksia..." />}>
+            <DuuniContent />
+          </Suspense>
+        </ErrorBoundary>
       </section>
 
       <Modal />
