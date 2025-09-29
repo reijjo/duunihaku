@@ -8,19 +8,19 @@
     "clean": "rm -rf node_modules bun.lock"
   },
   "devDependencies": {
-    "@types/bun": "^1.2.13",
-    "@types/cors": "^2.8.18",
-    "@types/morgan": "^1.9.9",
-    "morgan": "^1.10.0"
+    "@types/bun": "^1.2.23",
+    "@types/cors": "^2.8.19",
+    "@types/morgan": "^1.9.10",
+    "morgan": "^1.10.1"
   },
   "peerDependencies": {
-    "typescript": "^5"
+    "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@apollo/server": "^4.12.0",
+    "@apollo/server": "^4.12.2",
     "cors": "^2.8.5",
-    "express": "^4",
+    "express": "^4.21.2",
     "graphql": "^16.11.0",
-    "mongoose": "^8.14.2"
+    "mongoose": "^8.18.2"
   }
 }
