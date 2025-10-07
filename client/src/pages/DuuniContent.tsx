@@ -71,8 +71,9 @@ export const DuuniContent = () => {
 
   return (
     <section>
-      <h2>Yhteensä: {filteredDuunit.length} kpl</h2>
-      <h3>hävinneet 374 kpl</h3>
+      <h4>hävinneet 374 kpl</h4>
+      <h4>Kaikki yhteensä: {data?.getAllDuunit.length + 374} kpl</h4>
+      <h2>UUDET YHTEENSÄ: {filteredDuunit.length} kpl</h2>
       <div className="responses">
         <h4>Vastattu: {vastattu}</h4>
         <h4>Ei vastattu: {eiVastattu}</h4>
