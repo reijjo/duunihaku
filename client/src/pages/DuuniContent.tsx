@@ -41,7 +41,7 @@ export const DuuniContent = () => {
         <Suspense fallback={<Loading />}>
           <ModifyModal id={id} />
         </Suspense>
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
   };
 
@@ -77,7 +77,7 @@ export const DuuniContent = () => {
       <div className="responses">
         <h4>Vastattu: {vastattu}</h4>
         <h4>Ei vastattu: {eiVastattu}</h4>
-        <h4>Haastattelut: 6</h4>
+        <h4>Haastattelut: 10</h4>
       </div>
       <DuuniFilters
         hae={hae}
