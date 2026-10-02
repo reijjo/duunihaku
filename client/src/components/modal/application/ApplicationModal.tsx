@@ -49,8 +49,8 @@ export const ApplicationModal = () => {
         type="date"
         placeholder="Hakupvm"
         label="Hakupvm"
-        id="hakupvm"
-        name="hakupvm"
+        id="haettu"
+        name="haettu"
         value={uus.haettu}
         onChange={handleChange}
       />

@@ -17,7 +17,7 @@ export const mongoConnect = async () => {
     const collections = await mongoose?.connection?.db?.collections();
     console.log(
       "Available collections:",
-      collections?.map((c) => c.collectionName).join(", ")
+      collections?.map((c) => c.collectionName).join(", "),
     );
   } catch (err) {
     console.log("Mongoose error", err);

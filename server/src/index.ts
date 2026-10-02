@@ -33,7 +33,7 @@ app.use(
   express.json(),
   expressMiddleware(server, {
     context: async ({ req }) => ({ headers: req.headers }),
-  })
+  }),
 );
 
 app.use(notFoundHandler);
